@@ -70,7 +70,12 @@ TOOL_REGISTRY: Dict[str, Callable[..., str]] = {
 # ==========================
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You call tools by outputting JSON only.
+
+Tool: output_every_func_return_type - lists function return types from a Python file
+
+Output exactly this JSON:
+{"tool": "output_every_func_return_type", "args": {"file_path": "tool_calling.py"}}"""
 
 
 def resolve_path(p: str) -> str:
@@ -101,7 +106,7 @@ def extract_tool_call(text: str) -> Dict[str, Any]:
 
 def run_model_for_tool_call(system_prompt: str) -> Dict[str, Any]:
     response = chat(
-        model="llama3.1:8b",
+        model="llama3.2:3b",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": "Call the tool now."},

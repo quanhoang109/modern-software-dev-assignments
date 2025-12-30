@@ -7,16 +7,17 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """Reverse the word letter by letter. Output only the result.
 
-USER_PROMPT = """
-Reverse the order of letters in the following word. Only output the reversed word, no other text:
+word: cat (c-a-t) -> reversed: tac
+word: hello (h-e-l-l-o) -> reversed: olleh
+word: planet (p-l-a-n-e-t) -> reversed: tenalp
+word: silver (s-i-l-v-e-r) -> reversed: revlis"""
 
-httpstatus
-"""
+USER_PROMPT = """word: working (w-o-r-k-i-n-g) -> reversed:"""
 
 
-EXPECTED_OUTPUT = "sutatsptth"
+EXPECTED_OUTPUT = "gnikrow"
 
 def test_your_prompt(system_prompt: str) -> bool:
     """Run the prompt up to NUM_RUNS_TIMES and return True if any output matches EXPECTED_OUTPUT.
@@ -26,7 +27,7 @@ def test_your_prompt(system_prompt: str) -> bool:
     for idx in range(NUM_RUNS_TIMES):
         print(f"Running test {idx + 1} of {NUM_RUNS_TIMES}")
         response = chat(
-            model="mistral-nemo:12b",
+            model="llama3.2:3b",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": USER_PROMPT},

@@ -29,8 +29,8 @@ ollama -v
 
 Before running the test scripts, make sure you have the following models pulled. You only need to do this once (unless you remove the models later):
 ```bash
-ollama run mistral-nemo:12b
-ollama run llama3.1:8b
+ollama run mistral:7b
+ollama run llama3.2:3b
 ```
 
 ## Techniques and source files

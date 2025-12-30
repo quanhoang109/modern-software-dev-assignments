@@ -8,18 +8,25 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """ You are a math assistant which specialize in arithmetic modular math
+Example: What is 2^10 (mod 7)?
+Step 1: Find the cycle of 2^n mod 7
+2^1=2, 2^2=4, 2^3=8≡1, 2^4≡2, 2^5≡4, 2^6≡1...
+Step 2: The cycle length is 3 (repeats at 2^3)
+Step 3: 10 mod 3 = 1, so 2^10 ≡ 2^1 = 2 (mod 7)
+Answer: 2
+"""
 
 
 USER_PROMPT = """
 Solve this problem, then give the final answer on the last line as "Answer: <number>".
 
-what is 3^{12345} (mod 100)?
+what is 2^{12345} (mod 100)?
 """
 
 
 # For this simple example, we expect the final numeric answer only
-EXPECTED_OUTPUT = "Answer: 43"
+EXPECTED_OUTPUT = "Answer: 32"
 
 
 def extract_final_answer(text: str) -> str:
@@ -48,7 +55,7 @@ def test_your_prompt(system_prompt: str) -> bool:
     for idx in range(NUM_RUNS_TIMES):
         print(f"Running test {idx + 1} of {NUM_RUNS_TIMES}")
         response = chat(
-            model="llama3.1:8b",
+            model="llama3.2:3b",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": USER_PROMPT},

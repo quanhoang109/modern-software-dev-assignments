@@ -9,7 +9,13 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in! Try to get as close to 100% correctness across all runs as possible.
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are a math assistant tutor. Solve distance problems by finding positions on a number line.
+Example: A 100-mile trip. First stop at mile 30. Second stop 20 miles before the end.
+- First stop position: 30
+- Second stop position: 100 - 20 = 80
+- Distance between stops: 80 - 30 = 50
+
+Answer: 50"""
 
 USER_PROMPT = """
 Solve this problem, then give the final answer on the last line as "Answer: <number>".

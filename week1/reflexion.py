@@ -15,7 +15,15 @@ Keep the implementation minimal.
 """
 
 # TODO: Fill this in!
-YOUR_REFLEXION_PROMPT = ""
+YOUR_REFLEXION_PROMPT = """You fix buggy Python code.
+
+A valid password must have ALL of:
+- At least one uppercase letter
+- At least one lowercase letter
+- At least one digit
+- At least one special character from: !@#$%^&*()-_
+
+Given the previous code and test failures, output ONLY a corrected Python code block. No explanations."""
 
 
 # Ground-truth test suite used to evaluate generated code
@@ -81,7 +89,7 @@ def evaluate_function(func: Callable[[str], bool]) -> Tuple[bool, List[str]]:
 
 def generate_initial_function(system_prompt: str) -> str:
     response = chat(
-        model="llama3.2:3b",
+        model="mistral:7b",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": "Provide the implementation now."},
@@ -96,7 +104,16 @@ def your_build_reflexion_context(prev_code: str, failures: List[str]) -> str:
 
     Return a string that will be sent as the user content alongside the reflexion system prompt.
     """
-    return ""
+    failure_text = "\n".join(f"- {f}" for f in failures)
+    return f"""Previous code:
+```python
+{prev_code}
+```
+
+Test failures:
+{failure_text}
+
+Fix the code to pass all tests."""
 
 
 def apply_reflexion(
@@ -108,7 +125,7 @@ def apply_reflexion(
     reflection_context = build_context(prev_code, failures)
     print(f"REFLECTION CONTEXT: {reflection_context}, {reflexion_prompt}")
     response = chat(
-        model="llama3.2:3b",
+        model="mistral:7b",
         messages=[
             {"role": "system", "content": reflexion_prompt},
             {"role": "user", "content": reflection_context},

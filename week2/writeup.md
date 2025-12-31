@@ -20,25 +20,66 @@ This assignment took me about **TODO** hours to do.
 For each exercise, please include what prompts you used to generate the answer, in addition to the location of the generated response. Make sure to clearly add comments in your code documenting which parts are generated.
 
 ### Exercise 1: Scaffold a New Feature
-Prompt: 
+Prompt:
 ```
-TODO
-``` 
+Analyze the existing extract_action_items() function in week2/app/services/extract.py, which currently extracts action items using predefined heuristics.
+
+Implement an LLM-powered alternative, extract_action_items_llm(), that utilizes Ollama to perform action item extraction via a large language model.
+
+Requirements:
+- Use Ollama's structured outputs (format="json") to get a JSON array of strings
+- Handle empty input gracefully
+- Parse different JSON response formats (list or dict with action_items/items key)
+- Include error handling for JSON parsing failures
+- Use llama3.2:3b model by default with low temperature for consistency
+```
 
 Generated Code Snippets:
 ```
-TODO: List all modified code files with the relevant line numbers.
+week2/app/services/extract.py: lines 92-157
+
+Added extract_action_items_llm() function that:
+- Takes text input and optional model parameter
+- Returns empty list for empty/whitespace input
+- Uses system prompt instructing LLM to extract action items as JSON array
+- Calls Ollama chat() with format="json" for structured output
+- Parses JSON response handling both list and dict formats
+- Includes error handling for JSONDecodeError and other exceptions
 ```
 
 ### Exercise 2: Add Unit Tests
-Prompt: 
+Prompt:
 ```
-TODO
-``` 
+Write unit tests for extract_action_items_llm() covering multiple inputs:
+- Bullet lists (-, *, •)
+- Keyword-prefixed lines (TODO:, Action:, Next:)
+- Checkbox items ([ ], [x])
+- Empty input
+- No action items (non-actionable text)
+- Mixed content (actionable + non-actionable)
+- Numbered lists (1., 2., 3.)
+
+Use pytest and ensure tests verify:
+- Function returns a list
+- All items are strings
+- Empty input returns empty list
+```
 
 Generated Code Snippets:
 ```
-TODO: List all modified code files with the relevant line numbers.
+week2/tests/test_extract.py: lines 22-119
+
+Added TestExtractActionItemsLLM class with 8 test methods:
+- test_extract_bullet_list: Tests bullet point extraction
+- test_extract_keyword_prefixed_lines: Tests TODO/Action prefix extraction
+- test_extract_checkbox_items: Tests checkbox-style items
+- test_empty_input: Verifies empty/whitespace returns []
+- test_no_action_items: Tests non-actionable text handling
+- test_mixed_content: Tests mixed actionable/non-actionable content
+- test_returns_list: Verifies return type is always list
+- test_numbered_list: Tests numbered list extraction
+
+Also fixed extract.py line 148 to handle "actionItems" camelCase key from LLM response.
 ```
 
 ### Exercise 3: Refactor Existing Code for Clarity

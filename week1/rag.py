@@ -37,7 +37,10 @@ QUESTION = (
 
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are a Python developer. 
+Write clean, working code based on the provided API documentation.
+Use the requests library for HTTP calls.
+Follow the documented authentication method exactly."""
 
 
 # For this simple example
@@ -56,7 +59,7 @@ def YOUR_CONTEXT_PROVIDER(corpus: List[str]) -> List[str]:
 
     For example, return [] to simulate missing context, or [corpus[0]] to include the API docs.
     """
-    return []
+    return [corpus[0]]  # Return all documents (the API docs)
 
 
 def make_user_prompt(question: str, context_docs: List[str]) -> str:

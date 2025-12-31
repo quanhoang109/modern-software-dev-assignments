@@ -87,3 +87,78 @@ def _looks_imperative(sentence: str) -> bool:
         "investigate",
     }
     return first.lower() in imperative_starters
+
+
+def extract_action_items_llm(text: str, model: str = "llama3.2:3b") -> List[str]:
+    """Extract action items from text using an LLM.
+
+    Uses Ollama's structured outputs to get a JSON array of action items.
+
+    Args:
+        text: The input text containing notes/tasks to extract action items from.
+        model: The Ollama model to use for extraction.
+
+    Returns:
+        A list of extracted action item strings.
+    """
+    # Handle empty input
+    if not text or not text.strip():
+        return []
+
+    # System prompt for action item extraction
+    system_prompt = """You are an action item extractor. Given a text containing notes,
+extract all actionable tasks and return them as a JSON array of strings.
+
+Rules:
+- Extract clear, actionable items (tasks that someone needs to do)
+- Remove bullet points, checkboxes, and prefixes like "TODO:", "Action:", etc.
+- Keep each action item concise but complete
+- If no action items are found, return an empty array []
+- Return ONLY the JSON array, no other text"""
+
+    user_prompt = f"""Extract action items from the following text:
+
+{text}
+
+Return a JSON array of action item strings."""
+
+    try:
+        response = chat(
+            model=model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            format="json",
+            options={"temperature": 0.1},
+        )
+
+        # Parse the JSON response
+        content = response.message.content.strip()
+        result = json.loads(content)
+
+        # Handle different response formats
+        if isinstance(result, list):
+            # Direct list of strings
+            return [str(item) for item in result if item]
+        elif isinstance(result, dict):
+            # Dict with various possible keys (action_items, actionItems, items, etc.)
+            items = (
+                result.get("action_items")
+                or result.get("actionItems")
+                or result.get("items")
+                or result.get("actions")
+                or result.get("tasks")
+                or []
+            )
+            return [str(item) for item in items if item]
+        else:
+            return []
+
+    except json.JSONDecodeError:
+        # If JSON parsing fails, return empty list
+        return []
+    except Exception as e:
+        # Log error and return empty list for robustness
+        print(f"Error in extract_action_items_llm: {e}")
+        return []
